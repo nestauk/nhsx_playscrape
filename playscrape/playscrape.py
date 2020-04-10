@@ -47,7 +47,9 @@ def crawl(driver, n_pages, sleep):
         click_live(driver, 'span', 'Show More')
 
 
-def scrape(source):
+def scrape(title, source):
+    with open(f'{title}.html', 'w') as f:
+        f.write(source)
     soup = BeautifulSoup(source, features="html.parser")
     for element in soup.find_all('div'):
         _rating = element.get('aria-label')
@@ -57,7 +59,7 @@ def scrape(source):
             break
     _class = element.parent.parent.parent.parent.parent.parent['class']
     parents = soup.find_all('div', {'class': _class})
-    print('--> Found', len(parents)/2, 'reviews')
+    print('--> Found', len(parents), 'reviews')
     reviews = []
     for parent in parents:
         _review = []
@@ -81,7 +83,7 @@ def scrape(source):
         if len(_review) > 2:
             data['review'] = _review[-1]
         reviews.append(data)
-    return [r for i, r in enumerate(reviews) if i % 2 == 0]
+    return [r for i, r in enumerate(reviews)]
 
 
 def crawl_and_scrape(driver_location, app_id, n_pages=5, sleep=2):
@@ -93,23 +95,23 @@ def crawl_and_scrape(driver_location, app_id, n_pages=5, sleep=2):
     title = driver.title
     driver.close()
     #service.stop()
-    reviews = scrape(source)
+    reviews = scrape(title, source)
     return reviews, title
 
 
 if __name__ == "__main__":
     driver_location = '/Users/jklinger/Downloads/chromedriver81'
     #driver_location = '/Users/jklinger/Downloads/msedgedriver'
-    for app_id in (#'com.nhs.online.nhsonline',
-                   #'px.app.systmonline',
-                   #'health.livi.android',
-                   #'air.com.sensely.asknhs',
-                   #'net.iplato.mygp',
-                   #'uk.co.patient.patientaccess',
-                   'com.babylon',):
-                   #'com.pushdr.application'):
+    for app_id in ('com.nhs.online.nhsonline',
+                   'px.app.systmonline',
+                   'health.livi.android',
+                   'air.com.sensely.asknhs',
+                   'net.iplato.mygp',
+                   'uk.co.patient.patientaccess',
+                   'com.babylon',
+                   'com.pushdr.application'):
         print(app_id)
-        reviews, title = crawl_and_scrape(driver_location, app_id, n_pages=20)
+        reviews, title = crawl_and_scrape(driver_location, app_id, n_pages=10)
         title = title.split(' - Apps on Google Play')[0]
         data = {'title': title, 'reviews': reviews}
         with open(f'{app_id}.json', 'w') as f:
