@@ -5,8 +5,6 @@ on: [push,workflow_dispatch]
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
 
     steps:
     - uses: actions/checkout@v2
@@ -21,8 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         conda create --name tests
-        conda init bash
-        conda activate tests
+        source activate tests
         pip install requirements.txt
     - name: Lint with flake8
       run: |
