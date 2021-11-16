@@ -60,6 +60,7 @@ https://play.google.com/store/apps/details?id=com.nhs.online.nhsonline&hl=en_GB&
  * Bad luck.
 * Even though running `--headless` might seem like a good idea, it seems to make the system *very* unreliable (it seems to massively truncate the number of reviews, reason unknown). This is a bit of a barrier to running this in production!
 * Run time is way longer than it needs to be: the best way to reduce run time would be add explicit element waiting, however would require some serious investigation since element IDs can't be determined a priori because Google generates these on-the-fly. I'm sure there's something that could be done, and it would likely reduce run time by up to 90%.
+* Tests are currently limited to the very functional stuff, and there is zero coverage of the bulk of the functionality here. Doing so will require setting up Selenium in GH actions, which is a body of work in and of itself.
 
 # Legacy features
 
