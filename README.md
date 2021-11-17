@@ -2,6 +2,11 @@
 
 Crawl playstore pages for a given set of apps and scrape the reviews.
 
+## Supported python versions and operating systems
+
+Although the tests claim coverage of python 3.7 - 3.10, and both Ubuntu and MacOS, in practice
+only `python==3.9` on MacOS have been tested in anger.
+
 ## Installation
 
 Set up a fresh environment (e.g. with `conda` or `venv`) and then:
