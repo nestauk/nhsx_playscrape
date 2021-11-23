@@ -1,0 +1,52 @@
+name: Basic integration
+
+on: [push, workflow_dispatch]
+
+jobs:
+  run-tests:
+    name: Build environment and run tests
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+        python-version:
+          - '3.7'
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: act/Hack 1- get setup-python to work on act with Ubuntu
+        if: ${{ env.ACT }}
+        run: |
+          if [ ! -f "/etc/lsb-release" ] ; then
+          echo "DISTRIB_RELEASE=18.04" > /etc/lsb-release
+          fi          
+          
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+          
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+          
+      - name: Test with pytest
+        run: |
+          pip install pytest
+          python -m pytest -vv
